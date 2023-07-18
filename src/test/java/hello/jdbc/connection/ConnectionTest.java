@@ -1,5 +1,6 @@
 package hello.jdbc.connection;
 
+import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -27,6 +28,19 @@ public class ConnectionTest {
         //DriverManagerDataSource - 항상 새롱누 커넥션을 획득
         DataSource datasource = new DriverManagerDataSource(URL, USERNAME, PASSWORD);
         useDataSource(datasource);
+    }
+
+    @Test
+    void dataSourceConnectionPool() throws SQLException, InterruptedException {
+        // 커넥션 풀링
+        HikariDataSource dataSource = new HikariDataSource();
+        dataSource.setJdbcUrl(URL);
+        dataSource.setUsername(USERNAME);
+        dataSource.setPassword(PASSWORD);
+        dataSource.setMaximumPoolSize(10);
+        dataSource.setPoolName("MyPool");
+        Thread.sleep(1000);
+        useDataSource(dataSource);
     }
 
     private void useDataSource(DataSource dataSource) throws SQLException {
